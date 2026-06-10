@@ -11,6 +11,11 @@ export default function LoginPage() {
           <Link href="/auth/register" className="text-yellow-400 hover:underline">Sign up</Link>
         </p>
         <AuthForm mode="login" />
+        <p className="text-center mt-4">
+          <Link href="/auth/forgot-password" className="text-zinc-500 text-sm hover:text-zinc-300 transition-colors">
+            Forgot your password?
+          </Link>
+        </p>
       </div>
     </div>
   )
