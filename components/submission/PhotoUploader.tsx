@@ -3,23 +3,45 @@
 import { useRef, useState } from 'react'
 import Image from 'next/image'
 import { AnalyseResponse } from '@/types'
+import exifr from 'exifr'
+
+interface GpsCoords {
+  latitude: number
+  longitude: number
+}
 
 interface Props {
   onPhoto: (file: File) => void
   onAnalysis: (result: AnalyseResponse) => void
   onAnalysisError: () => void
+  onGps: (coords: GpsCoords) => void
 }
 
-export function PhotoUploader({ onPhoto, onAnalysis, onAnalysisError }: Props) {
+export function PhotoUploader({ onPhoto, onAnalysis, onAnalysisError, onGps }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [analysing, setAnalysing] = useState(false)
+  const [gpsSource, setGpsSource] = useState<'exif' | 'none' | null>(null)
 
   async function handleFile(file: File) {
     setPreview(URL.createObjectURL(file))
+    setGpsSource(null)
     onPhoto(file)
-    setAnalysing(true)
 
+    // Extract GPS from EXIF in parallel with AI analysis
+    const [exif] = await Promise.allSettled([
+      exifr.gps(file),
+    ])
+
+    if (exif.status === 'fulfilled' && exif.value?.latitude && exif.value?.longitude) {
+      onGps({ latitude: exif.value.latitude, longitude: exif.value.longitude })
+      setGpsSource('exif')
+    } else {
+      setGpsSource('none')
+    }
+
+    // AI analysis
+    setAnalysing(true)
     const fd = new FormData()
     fd.append('photo', file)
 
@@ -63,11 +85,17 @@ export function PhotoUploader({ onPhoto, onAnalysis, onAnalysisError }: Props) {
           if (file) handleFile(file)
         }}
       />
-      {analysing && (
-        <p className="text-yellow-400 text-xs mt-2 text-center animate-pulse">
-          Analysing photo for graffiti…
-        </p>
-      )}
+      <div className="mt-2 min-h-[1.25rem] text-center">
+        {analysing && (
+          <p className="text-yellow-400 text-xs animate-pulse">Analysing photo for graffiti…</p>
+        )}
+        {!analysing && gpsSource === 'exif' && (
+          <p className="text-green-400 text-xs">Location read from photo</p>
+        )}
+        {!analysing && gpsSource === 'none' && preview && (
+          <p className="text-zinc-500 text-xs">No GPS in photo — enter location manually</p>
+        )}
+      </div>
     </div>
   )
 }

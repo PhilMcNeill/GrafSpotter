@@ -51,6 +51,11 @@ export function SubmitForm() {
     setPieces([emptyPiece()])
   }, [])
 
+  const handleGps = useCallback(({ latitude, longitude }: { latitude: number; longitude: number }) => {
+    setLatitude(latitude.toFixed(6))
+    setLongitude(longitude.toFixed(6))
+  }, [])
+
   function requestGps() {
     if (!navigator.geolocation) return
     setGpsLoading(true)
@@ -122,6 +127,7 @@ export function SubmitForm() {
           onPhoto={setPhoto}
           onAnalysis={handleAnalysis}
           onAnalysisError={handleAnalysisError}
+          onGps={handleGps}
         />
         {analysisError && (
           <p className="text-zinc-500 text-xs mt-2">
