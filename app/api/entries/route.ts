@@ -121,7 +121,11 @@ export async function POST(request: NextRequest) {
     .upload(fileName, photoBuffer, { contentType: photo.type, upsert: false })
 
   if (uploadError) {
-    return NextResponse.json({ error: 'Photo upload failed' }, { status: 500 })
+    console.error('Storage upload error:', uploadError)
+    return NextResponse.json(
+      { error: `Photo upload failed: ${uploadError.message}` },
+      { status: 500 }
+    )
   }
 
   const { data: { publicUrl } } = serviceClient.storage.from('photos').getPublicUrl(fileName)
