@@ -99,7 +99,7 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
         {/* TYPE */}
         <div>
           <p className={`${sectionLabel} mb-[clamp(8px,1.1vh,16px)]`}>TYPE</p>
-          <div className="grid grid-cols-2 gap-px bg-[#404242]">
+          <div className="grid grid-cols-2 gap-px bg-[#222323]">
             {TYPE_GRID.flat().map(t => (
               <button
                 key={t}
