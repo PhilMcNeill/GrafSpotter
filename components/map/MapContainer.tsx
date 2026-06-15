@@ -22,23 +22,32 @@ export function MapContainer() {
     direction === 'in' ? mapRef.current.zoomIn() : mapRef.current.zoomOut()
   }
 
-  const zoomBtn = "flex items-center justify-center w-12 h-12 bg-[#141415] text-[#dfdfdf] text-xl hover:bg-[#2a2b2b] transition-colors select-none"
+  // Figma: zoom buttons sit just right of sidebar edge, top ~40px from top
+  // Sidebar ~20.8vw, buttons at sidebar_width + ~12px gap
+  const zoomBtn = 'flex items-center justify-center w-[clamp(36px,3.1vw,48px)] h-[clamp(36px,3.1vw,48px)] bg-[#141415] text-[#dfdfdf] text-lg hover:bg-[#2a2b2b] transition-colors select-none font-mono leading-none'
 
   return (
-    <div className="flex-1 flex overflow-hidden bg-black">
-      {/* Filter panel */}
-      <div className="w-52 flex-shrink-0 hidden md:flex flex-col border-r border-[#222]">
+    <div className="flex w-full h-full overflow-hidden bg-black">
+      {/* Sidebar */}
+      <div
+        className="relative flex-shrink-0 flex flex-col"
+        style={{ width: 'clamp(220px, 20.8vw, 400px)' }}
+      >
         <FilterPanel filters={filters} onChange={setFilters} entryCount={entries.length} />
       </div>
 
-      {/* Map + zoom controls */}
-      <div className="flex-1 relative min-h-[400px] md:min-h-0">
+      {/* Map area */}
+      <div className="flex-1 relative">
         <MapView entries={entries} loading={isLoading} mapRef={mapRef} />
 
-        {/* Custom zoom controls — top-right */}
-        <div className="absolute top-3 right-3 z-[1000] flex flex-col gap-px">
+        {/* Zoom controls — top-left of map area (just right of sidebar) */}
+        <div
+          className="absolute z-[1000] flex flex-col"
+          style={{ top: 'clamp(16px, 2.5vh, 40px)', left: 'clamp(10px, 0.8vw, 14px)' }}
+        >
           <button className={zoomBtn} onClick={() => zoom('in')} aria-label="Zoom in">+</button>
-          <button className={zoomBtn} onClick={() => zoom('out')} aria-label="Zoom out">—</button>
+          <div className="h-px bg-[#222]" />
+          <button className={zoomBtn} onClick={() => zoom('out')} aria-label="Zoom out">−</button>
         </div>
       </div>
     </div>
