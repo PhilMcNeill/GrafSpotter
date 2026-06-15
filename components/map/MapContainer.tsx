@@ -56,29 +56,29 @@ export function MapContainer() {
         </div>
 
         {/* Submit modal — slides in over the map */}
-        {showSubmit && (
-          <div className="absolute inset-0 z-[2000] flex items-stretch justify-end">
-            {/* Backdrop */}
-            <div
-              className="absolute inset-0 bg-black/60"
+        <div
+          className={`absolute inset-0 z-[2000] flex items-stretch justify-end transition-all duration-300 ${showSubmit ? 'pointer-events-auto' : 'pointer-events-none'}`}
+        >
+          {/* Backdrop */}
+          <div
+            className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${showSubmit ? 'opacity-100' : 'opacity-0'}`}
+            onClick={() => setShowSubmit(false)}
+          />
+          {/* Panel */}
+          <div
+            className={`relative flex flex-col bg-[#141415] border-l border-[#222323] overflow-hidden h-full transition-transform duration-300 ease-in-out ${showSubmit ? 'translate-x-0' : 'translate-x-full'}`}
+            style={{ width: 'clamp(280px, 28vw, 480px)' }}
+          >
+            {/* Close */}
+            <button
               onClick={() => setShowSubmit(false)}
-            />
-            {/* Panel */}
-            <div
-              className="relative flex flex-col bg-[#141415] border-l border-[#222323] overflow-hidden h-full"
-              style={{ width: 'clamp(280px, 28vw, 480px)' }}
+              className="absolute top-[clamp(20px,2.8vh,40px)] right-[clamp(16px,2.1vw,30px)] text-[#444] hover:text-[#dfdfdf] transition-colors text-xl leading-none z-10"
             >
-              {/* Close */}
-              <button
-                onClick={() => setShowSubmit(false)}
-                className="absolute top-[clamp(20px,2.8vh,40px)] right-[clamp(16px,2.1vw,30px)] text-[#444] hover:text-[#dfdfdf] transition-colors text-xl leading-none z-10"
-              >
-                ×
-              </button>
-              <SubmitForm onDone={() => setShowSubmit(false)} />
-            </div>
+              ×
+            </button>
+            <SubmitForm onDone={() => setShowSubmit(false)} />
           </div>
-        )}
+        </div>
       </div>
     </div>
   )
