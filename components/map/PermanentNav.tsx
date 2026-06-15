@@ -13,7 +13,7 @@ export const NAV_WIDTH = 'clamp(50px, 4.17vw, 80px)'
 export function PermanentNav({ activePanel, onSelect }: Props) {
   const btnClass = (panel: Panel) =>
     `flex items-center justify-center transition-colors ${
-      activePanel === panel ? 'bg-[#5a2c0d]' : 'bg-[#141415] hover:bg-[#1e1e1f]'
+      activePanel === panel ? 'bg-[#dfdfdf]' : 'bg-[#141415] hover:bg-[#1e1e1f]'
     }`
 
   return (
@@ -34,7 +34,7 @@ export function PermanentNav({ activePanel, onSelect }: Props) {
         onClick={() => onSelect('filter')}
         title="Filter"
       >
-        <MapIcon />
+        <MapIcon active={activePanel === 'filter'} />
       </button>
       <button
         className={btnClass('submit')}
@@ -42,7 +42,7 @@ export function PermanentNav({ activePanel, onSelect }: Props) {
         onClick={() => onSelect('submit')}
         title="Submit sighting"
       >
-        <CameraIcon />
+        <CameraIcon active={activePanel === 'submit'} />
       </button>
       <button
         className={btnClass('account')}
@@ -50,15 +50,16 @@ export function PermanentNav({ activePanel, onSelect }: Props) {
         onClick={() => onSelect('account')}
         title="Account / Log in"
       >
-        <PersonIcon />
+        <PersonIcon active={activePanel === 'account'} />
       </button>
     </div>
   )
 }
 
-function MapIcon() {
+function MapIcon({ active }: { active: boolean }) {
+  const c = active ? '#101011' : '#dfdfdf'
   return (
-    <svg width="45%" height="45%" viewBox="0 0 24 24" fill="none" stroke="#dfdfdf" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="45%" height="45%" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
       <line x1="9" y1="3" x2="9" y2="18" />
       <line x1="15" y1="6" x2="15" y2="21" />
@@ -66,18 +67,20 @@ function MapIcon() {
   )
 }
 
-function CameraIcon() {
+function CameraIcon({ active }: { active: boolean }) {
+  const c = active ? '#101011' : '#dfdfdf'
   return (
-    <svg width="42%" height="42%" viewBox="0 0 24 24" fill="none" stroke="#dfdfdf" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="42%" height="42%" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
       <circle cx="12" cy="13" r="3" />
     </svg>
   )
 }
 
-function PersonIcon() {
+function PersonIcon({ active }: { active: boolean }) {
+  const c = active ? '#101011' : '#dfdfdf'
   return (
-    <svg width="42%" height="42%" viewBox="0 0 24 24" fill="none" stroke="#dfdfdf" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="42%" height="42%" viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />
     </svg>
