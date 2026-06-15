@@ -3,46 +3,66 @@
 type Panel = 'filter' | 'submit' | 'account'
 
 interface Props {
-  selected: Panel | null
+  activePanel: Panel | null
   onSelect: (panel: Panel) => void
 }
 
-// Figma: nav=160px, button=120px, left-pad=20px, gap=20px at 3840×2160
+// Figma: nav=160px at 3840 = 4.17vw
 export const NAV_WIDTH = 'clamp(50px, 4.17vw, 80px)'
-const BTN_SIZE = 'clamp(38px, 3.125vw, 60px)'
-const BTN_PAD = 'clamp(6px, 0.52vw, 10px)' // left/right margin within nav
 
-export function PermanentNav({ selected, onSelect }: Props) {
-  const btn = (panel: Panel) => ({
-    style: {
-      width: `clamp(38px, 3.125vw, 60px)`,
-      height: `clamp(38px, 3.125vw, 60px)`,
-    },
-    className: `flex items-center justify-center flex-shrink-0 transition-colors ${
-      selected === panel ? 'bg-[#5a2c0d]' : 'bg-[#141415] hover:bg-[#1e1e1f]'
-    }`,
-    onClick: () => onSelect(panel),
-  })
+export function PermanentNav({ activePanel, onSelect }: Props) {
+  // Map button is always #5a2c0d — it's the current view indicator
+  // Camera/account highlight only when their panel is open
+  const btnClass = (panel: Panel) =>
+    `flex items-center justify-center transition-colors ${
+      panel === 'filter'
+        ? 'bg-[#5a2c0d]'                                                    // always active
+        : activePanel === panel
+          ? 'bg-[#5a2c0d]'
+          : 'bg-[#141415] hover:bg-[#1e1e1f]'
+    }`
 
   return (
     <div
-      className="flex-shrink-0 h-full flex flex-col items-start bg-[#101011]"
-      style={{ width: NAV_WIDTH, paddingLeft: BTN_PAD, paddingRight: BTN_PAD, paddingTop: 'clamp(8px, 0.83vh, 18px)', gap: 'clamp(5px, 0.93vh, 20px)' }}
+      className="flex-shrink-0 h-full flex flex-col bg-[#101011]"
+      style={{
+        width: NAV_WIDTH,
+        paddingTop: 'clamp(8px, 0.83vh, 18px)',
+        gap: 'clamp(5px, 0.93vh, 20px)',
+        paddingLeft: 'clamp(5px, 0.52vw, 10px)',
+        paddingRight: 'clamp(5px, 0.52vw, 10px)',
+      }}
     >
-      <button {...btn('filter')} title="Filter">
-        <MapIcon size={BTN_SIZE} />
+      {/* Each button is square = full nav width minus horizontal padding */}
+      <button
+        className={btnClass('filter')}
+        style={{ width: '100%', aspectRatio: '1' }}
+        onClick={() => onSelect('filter')}
+        title="Filter"
+      >
+        <MapIcon />
       </button>
-      <button {...btn('submit')} title="Submit sighting">
-        <CameraIcon size={BTN_SIZE} />
+      <button
+        className={btnClass('submit')}
+        style={{ width: '100%', aspectRatio: '1' }}
+        onClick={() => onSelect('submit')}
+        title="Submit sighting"
+      >
+        <CameraIcon />
       </button>
-      <button {...btn('account')} title="Account / Log in">
-        <PersonIcon size={BTN_SIZE} />
+      <button
+        className={btnClass('account')}
+        style={{ width: '100%', aspectRatio: '1' }}
+        onClick={() => onSelect('account')}
+        title="Account / Log in"
+      >
+        <PersonIcon />
       </button>
     </div>
   )
 }
 
-function MapIcon({ size }: { size: string }) {
+function MapIcon() {
   return (
     <svg width="45%" height="45%" viewBox="0 0 24 24" fill="none" stroke="#dfdfdf" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
@@ -52,7 +72,7 @@ function MapIcon({ size }: { size: string }) {
   )
 }
 
-function CameraIcon({ size }: { size: string }) {
+function CameraIcon() {
   return (
     <svg width="42%" height="42%" viewBox="0 0 24 24" fill="none" stroke="#dfdfdf" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
@@ -61,7 +81,7 @@ function CameraIcon({ size }: { size: string }) {
   )
 }
 
-function PersonIcon({ size }: { size: string }) {
+function PersonIcon() {
   return (
     <svg width="42%" height="42%" viewBox="0 0 24 24" fill="none" stroke="#dfdfdf" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
