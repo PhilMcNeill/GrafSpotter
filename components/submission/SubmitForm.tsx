@@ -120,7 +120,7 @@ export function SubmitForm({ onDone }: { onDone?: () => void }) {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-[#141415] border-r border-[#222323]">
       {/* Header */}
       <div className="px-[clamp(16px,2.1vw,30px)] pt-[clamp(24px,3.5vh,52px)] pb-0">
         <span className={sectionLabel}>SUBMIT</span>
