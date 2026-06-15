@@ -32,6 +32,7 @@ export function MapView({ entries, loading, mapRef }: Props) {
       center: [51.505, -0.09],
       zoom: 12,
       zoomControl: false,
+      attributionControl: false,
     })
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
