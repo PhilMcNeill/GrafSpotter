@@ -78,7 +78,7 @@ export function MapContainer() {
 
         {/* Slide panel — overlays from the left edge of map area */}
         <div
-          className="absolute top-0 left-0 h-full z-[2000] transition-transform duration-300 ease-in-out"
+          className={`absolute top-0 left-0 h-full z-[2000] transition-transform duration-300 ease-in-out ${panelOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
           style={{
             width: PANEL_WIDTH,
             transform: panelOpen ? 'translateX(0)' : 'translateX(-100%)',
