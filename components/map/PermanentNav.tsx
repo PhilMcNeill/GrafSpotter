@@ -11,15 +11,9 @@ interface Props {
 export const NAV_WIDTH = 'clamp(50px, 4.17vw, 80px)'
 
 export function PermanentNav({ activePanel, onSelect }: Props) {
-  // Map button is always #5a2c0d — it's the current view indicator
-  // Camera/account highlight only when their panel is open
   const btnClass = (panel: Panel) =>
     `flex items-center justify-center transition-colors ${
-      panel === 'filter'
-        ? 'bg-[#5a2c0d]'                                                    // always active
-        : activePanel === panel
-          ? 'bg-[#5a2c0d]'
-          : 'bg-[#141415] hover:bg-[#1e1e1f]'
+      activePanel === panel ? 'bg-[#5a2c0d]' : 'bg-[#141415] hover:bg-[#1e1e1f]'
     }`
 
   return (
