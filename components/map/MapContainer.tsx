@@ -63,7 +63,7 @@ export function MapContainer() {
       <PermanentNav activePanel={activePanel} onSelect={handleNavSelect} />
 
       {/* Map fills all remaining space — never resizes */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative overflow-hidden">
         <MapView entries={entries} loading={isLoading} mapRef={mapRef} />
 
         {/* Zoom controls — always top-left of map area */}
