@@ -60,7 +60,7 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
 
   // Shared text style: IBM Plex Mono, #dfdfdf, uppercase, tracked
   const sectionLabel = 'text-[#dfdfdf] text-[clamp(9px,0.78vw,12px)] tracking-[0.32em] uppercase'
-  const cellBase = 'flex items-center justify-center text-[clamp(8px,0.72vw,11px)] tracking-[0.28em] uppercase transition-colors cursor-pointer py-[clamp(12px,1.68vh,24px)]'
+  const cellBase = 'flex items-center justify-center text-[clamp(8px,0.72vw,11px)] tracking-[0.28em] hover:tracking-[0.40em] uppercase transition-[letter-spacing,background-color] duration-300 cursor-pointer py-[clamp(12px,1.68vh,24px)]'
 
   return (
     <div className="h-full flex flex-col bg-[#141415] select-none overflow-hidden">
