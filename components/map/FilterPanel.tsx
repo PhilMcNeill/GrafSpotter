@@ -60,7 +60,7 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
 
   // Shared text style: IBM Plex Mono, #dfdfdf, uppercase, tracked
   const sectionLabel = 'text-[#dfdfdf] text-[clamp(9px,0.78vw,12px)] tracking-[0.32em] uppercase'
-  const cellBase = 'flex items-center justify-center text-[clamp(8px,0.72vw,11px)] tracking-[0.28em] uppercase transition-colors cursor-pointer py-[clamp(10px,1.1vh,18px)]'
+  const cellBase = 'flex items-center justify-center text-[clamp(8px,0.72vw,11px)] tracking-[0.28em] uppercase transition-colors cursor-pointer py-[clamp(12px,1.32vh,21px)]'
 
   return (
     <div className="h-full flex flex-col bg-[#141415] select-none overflow-hidden">
@@ -89,7 +89,7 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
             value={writerInput}
             onChange={e => { setWriterInput(e.target.value); update({ writer: e.target.value || undefined }) }}
             placeholder="ANY"
-            className="w-full bg-[#424242] border-0 px-[clamp(10px,1.1vw,16px)] py-[clamp(10px,1.4vh,20px)] text-[clamp(9px,0.78vw,12px)] tracking-[0.28em] uppercase text-[#dfdfdf] placeholder-[#dfdfdf] focus:outline-none focus:ring-1 focus:ring-[#666] transition-colors"
+            className="w-full bg-[#424242] border-0 px-[clamp(10px,1.1vw,16px)] py-[clamp(12px,1.68vh,24px)] text-[clamp(9px,0.78vw,12px)] tracking-[0.28em] uppercase text-[#dfdfdf] placeholder-[#dfdfdf] focus:outline-none focus:ring-1 focus:ring-[#666] transition-colors"
           />
           <datalist id="writers-list">
             {writers.map(w => <option key={w} value={w} />)}
@@ -122,7 +122,7 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
                 type="date"
                 value={filters.date_from ?? ''}
                 onChange={e => update({ date_from: e.target.value || undefined })}
-                className="w-full bg-[#424242] border-0 pl-[clamp(52px,5vw,72px)] pr-[clamp(10px,1.1vw,16px)] py-[clamp(10px,1.4vh,20px)] text-[clamp(9px,0.78vw,12px)] tracking-[0.15em] text-[#dfdfdf] focus:outline-none [color-scheme:dark]"
+                className="w-full bg-[#424242] border-0 pl-[clamp(52px,5vw,72px)] pr-[clamp(10px,1.1vw,16px)] py-[clamp(12px,1.68vh,24px)] text-[clamp(9px,0.78vw,12px)] tracking-[0.15em] text-[#dfdfdf] focus:outline-none [color-scheme:dark]"
               />
             </div>
             <div className="relative">
@@ -131,7 +131,7 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
                 type="date"
                 value={filters.date_to ?? ''}
                 onChange={e => update({ date_to: e.target.value || undefined })}
-                className="w-full bg-[#424242] border-0 pl-[clamp(40px,3.8vw,58px)] pr-[clamp(10px,1.1vw,16px)] py-[clamp(10px,1.4vh,20px)] text-[clamp(9px,0.78vw,12px)] tracking-[0.15em] text-[#dfdfdf] focus:outline-none [color-scheme:dark]"
+                className="w-full bg-[#424242] border-0 pl-[clamp(40px,3.8vw,58px)] pr-[clamp(10px,1.1vw,16px)] py-[clamp(12px,1.68vh,24px)] text-[clamp(9px,0.78vw,12px)] tracking-[0.15em] text-[#dfdfdf] focus:outline-none [color-scheme:dark]"
               />
             </div>
           </div>
