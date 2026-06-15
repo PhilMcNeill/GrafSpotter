@@ -25,6 +25,11 @@ body {
   font-family: var(--font-ibm-plex-mono), ui-monospace, monospace;
 }
 
+/* Leaflet tile background — prevents white flash when tiles haven't loaded */
+.leaflet-container {
+  background: #090909;
+}
+
 /* Dark Leaflet popup */
 .graf-popup .leaflet-popup-content-wrapper {
   background: #111;
