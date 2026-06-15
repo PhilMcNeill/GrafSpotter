@@ -7,12 +7,11 @@ import { Entry } from '@/types'
 import { format } from 'date-fns'
 import type { RefObject } from 'react'
 
-// Fix default marker icon paths broken by webpack
-delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl
-L.Icon.Default.mergeOptions({
-  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+const customIcon = L.icon({
+  iconUrl: '/location.svg',
+  iconSize: [15, 15],
+  iconAnchor: [7, 15],
+  popupAnchor: [0, -16],
 })
 
 interface Props {
@@ -61,7 +60,7 @@ export function MapView({ entries, loading, mapRef }: Props) {
     clusterRef.current = group
 
     entries.forEach(entry => {
-      const marker = L.marker([entry.latitude, entry.longitude])
+      const marker = L.marker([entry.latitude, entry.longitude], { icon: customIcon })
       marker.bindPopup(`
         <div style="min-width:210px;background:#111;color:#f4f4f5;font-family:ui-monospace,monospace;font-size:11px;">
           ${entry.photo_url ? `<img src="${entry.photo_url}" style="width:100%;display:block;margin-bottom:10px;max-height:140px;object-fit:cover" />` : ''}
