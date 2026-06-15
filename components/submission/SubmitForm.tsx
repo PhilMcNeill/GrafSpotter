@@ -20,7 +20,7 @@ function emptyPiece(): PieceField {
 const sectionLabel = 'text-[#dfdfdf] text-[clamp(9px,0.78vw,12px)] tracking-[0.32em] uppercase'
 const inputCls = 'w-full bg-[#424242] border-0 px-[clamp(10px,1.1vw,16px)] py-[clamp(12px,1.68vh,24px)] text-[clamp(9px,0.78vw,12px)] tracking-[0.28em] uppercase text-[#dfdfdf] placeholder-[#666] focus:outline-none focus:ring-1 focus:ring-[#666]'
 
-export function SubmitForm() {
+export function SubmitForm({ onDone }: { onDone?: () => void }) {
   const router = useRouter()
   const [photo, setPhoto] = useState<File | null>(null)
   const [detectionId, setDetectionId] = useState<string | null>(null)
@@ -115,7 +115,8 @@ export function SubmitForm() {
       }
     }
 
-    router.push('/map')
+    if (onDone) onDone()
+    else router.push('/map')
   }
 
   return (

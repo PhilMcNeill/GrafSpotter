@@ -11,6 +11,7 @@ interface Props {
   filters: EntryFilters
   onChange: (filters: EntryFilters) => void
   entryCount: number
+  onSubmit?: () => void
 }
 
 // Type grid: 2 columns, 3 rows — matches Figma layout
@@ -24,7 +25,7 @@ const TYPE_GRID: [GraffitiType, GraffitiType][] = [
 // Sidebar = 800/3840 = 20.8% → use 20vw clamped
 // All internal px values ÷ 2.67 (3840→1440 ratio)
 
-export function FilterPanel({ filters, onChange, entryCount }: Props) {
+export function FilterPanel({ filters, onChange, entryCount, onSubmit }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const [writers, setWriters] = useState<string[]>([])
@@ -156,8 +157,8 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
           </button>
           {/* Submit */}
           <button
-            onClick={() => router.push('/submit')}
-            className={`flex items-center justify-center flex-shrink-0 w-[clamp(36px,3.1vw,48px)] h-[clamp(36px,3.1vw,48px)] transition-colors ${pathname === '/submit' ? 'bg-[#424242]' : 'bg-[#2a2b2b] hover:bg-[#333]'}`}
+            onClick={() => onSubmit?.()}
+            className="flex items-center justify-center flex-shrink-0 w-[clamp(36px,3.1vw,48px)] h-[clamp(36px,3.1vw,48px)] bg-[#2a2b2b] hover:bg-[#333] transition-colors"
             title="Submit sighting"
           >
             <CameraIcon />
