@@ -60,7 +60,7 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
 
   // Shared text style: IBM Plex Mono, #dfdfdf, uppercase, tracked
   const sectionLabel = 'text-[#dfdfdf] text-[clamp(9px,0.78vw,12px)] tracking-[0.32em] uppercase'
-  const cellBase = 'flex items-center justify-center text-[clamp(8px,0.72vw,11px)] tracking-[0.28em] uppercase transition-colors cursor-pointer py-[clamp(12px,1.32vh,21px)]'
+  const cellBase = 'flex items-center justify-center text-[clamp(8px,0.72vw,11px)] tracking-[0.28em] uppercase transition-colors cursor-pointer py-[clamp(12px,1.68vh,24px)]'
 
   return (
     <div className="h-full flex flex-col bg-[#141415] select-none overflow-hidden">
@@ -99,7 +99,7 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
         {/* TYPE */}
         <div>
           <p className={`${sectionLabel} mb-[clamp(8px,1.1vh,16px)]`}>TYPE</p>
-          <div className="grid grid-cols-2 gap-px bg-[#0a0a0a]">
+          <div className="grid grid-cols-2 gap-px bg-[#404242]">
             {TYPE_GRID.flat().map(t => (
               <button
                 key={t}
