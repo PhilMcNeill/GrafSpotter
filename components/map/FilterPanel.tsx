@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { EntryFilters, GraffitiType, GRAFFITI_TYPES } from '@/types'
 
 interface Props {
@@ -9,7 +11,7 @@ interface Props {
   entryCount: number
 }
 
-const TYPE_ROWS: GraffitiType[][] = [
+const TYPE_GRID: GraffitiType[][] = [
   ['tag', 'throw-up'],
   ['sticker', 'stencil'],
   ['piece', 'mural'],
@@ -18,6 +20,7 @@ const TYPE_ROWS: GraffitiType[][] = [
 export function FilterPanel({ filters, onChange, entryCount }: Props) {
   const [writers, setWriters] = useState<string[]>([])
   const [writerInput, setWriterInput] = useState(filters.writer ?? '')
+  const pathname = usePathname()
 
   useEffect(() => {
     fetch('/api/writers')
@@ -36,18 +39,35 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
 
   const hasFilters = !!(filters.writer || filters.type || filters.date_from || filters.date_to)
 
+  const sectionLabel = "block text-[#dfdfdf] text-xs tracking-[0.3em] uppercase mb-3"
+  const cell = (active: boolean) =>
+    `flex items-center justify-center px-2 py-3 text-[10px] tracking-[0.25em] uppercase border transition-colors cursor-pointer ${
+      active
+        ? 'bg-[#424242] text-[#dfdfdf] border-[#424242]'
+        : 'bg-[#2a2b2b] text-[#dfdfdf] border-[#2a2b2b] hover:bg-[#333]'
+    }`
+
   return (
-    <div className="h-full flex flex-col bg-[#111] text-zinc-100 font-mono text-xs select-none">
+    <div className="h-full flex flex-col bg-[#141415]" style={{ fontFamily: 'var(--font-ibm-plex-mono), ui-monospace, monospace' }}>
+
       {/* Header */}
-      <div className="px-5 pt-5 pb-4 border-b border-zinc-800">
-        <p className="text-zinc-500 tracking-widest uppercase text-[10px]">Filters</p>
+      <div className="px-5 pt-6 pb-5">
+        <span className="text-[#dfdfdf] text-sm tracking-[0.35em] uppercase">FILTER</span>
+        {hasFilters && (
+          <button
+            onClick={() => { onChange({}); setWriterInput('') }}
+            className="float-right text-[10px] tracking-[0.25em] uppercase text-[#666] hover:text-[#dfdfdf] transition-colors mt-0.5"
+          >
+            CLEAR
+          </button>
+        )}
       </div>
 
-      <div className="flex-1 overflow-y-auto divide-y divide-zinc-800/60">
+      <div className="flex-1 overflow-y-auto px-5 space-y-6 pb-4">
 
         {/* Writer */}
-        <section className="px-5 py-4 space-y-2">
-          <p className="text-zinc-500 tracking-widest uppercase text-[10px]">Writer</p>
+        <div>
+          <label className={sectionLabel}>WRITER</label>
           <input
             list="writers-list"
             value={writerInput}
@@ -55,80 +75,105 @@ export function FilterPanel({ filters, onChange, entryCount }: Props) {
               setWriterInput(e.target.value)
               update({ writer: e.target.value || undefined })
             }}
-            placeholder="Any"
-            className="w-full bg-zinc-900 border border-zinc-800 px-2.5 py-1.5 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-zinc-600 transition-colors"
+            placeholder="ANY"
+            className="w-full bg-[#424242] border-0 px-3 py-3 text-[10px] tracking-[0.25em] uppercase text-[#dfdfdf] placeholder-[#dfdfdf] focus:outline-none focus:ring-1 focus:ring-[#666]"
           />
           <datalist id="writers-list">
             {writers.map(w => <option key={w} value={w} />)}
           </datalist>
-        </section>
+        </div>
 
         {/* Type */}
-        <section className="px-5 py-4 space-y-2">
-          <p className="text-zinc-500 tracking-widest uppercase text-[10px]">Type</p>
-          <div className="space-y-1.5">
-            {TYPE_ROWS.map((row, i) => (
-              <div key={i} className="grid grid-cols-2 gap-1.5">
-                {row.map(type => (
-                  <button
-                    key={type}
-                    type="button"
-                    onClick={() => toggleType(type)}
-                    className={`px-2 py-1.5 text-[10px] tracking-widest uppercase border transition-colors text-left ${
-                      filters.type === type
-                        ? 'bg-zinc-100 text-zinc-900 border-zinc-100'
-                        : 'bg-transparent text-zinc-400 border-zinc-800 hover:border-zinc-600 hover:text-zinc-200'
-                    }`}
-                  >
-                    {type}
-                  </button>
-                ))}
-              </div>
-            ))}
+        <div>
+          <label className={sectionLabel}>TYPE</label>
+          <div className="grid grid-cols-2 gap-px bg-[#111]">
+            {TYPE_GRID.map((row, i) =>
+              row.map(type => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => toggleType(type)}
+                  className={cell(filters.type === type)}
+                >
+                  {type}
+                </button>
+              ))
+            )}
           </div>
-        </section>
+        </div>
 
-        {/* Date range */}
-        <section className="px-5 py-4 space-y-2">
-          <p className="text-zinc-500 tracking-widest uppercase text-[10px]">Date range</p>
-          <div className="space-y-1.5">
-            <div>
-              <p className="text-zinc-600 text-[10px] mb-1">From</p>
+        {/* Date Range */}
+        <div>
+          <label className={sectionLabel}>DATE RANGE</label>
+          <div className="space-y-px bg-[#111]">
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] tracking-[0.25em] text-[#dfdfdf] pointer-events-none">
+                FROM:
+              </span>
               <input
                 type="date"
                 value={filters.date_from ?? ''}
                 onChange={e => update({ date_from: e.target.value || undefined })}
-                className="w-full bg-zinc-900 border border-zinc-800 px-2.5 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-zinc-600 transition-colors"
+                className="w-full bg-[#424242] border-0 pl-14 pr-3 py-3 text-[10px] tracking-[0.2em] text-[#dfdfdf] focus:outline-none focus:ring-1 focus:ring-[#666] [color-scheme:dark]"
               />
             </div>
-            <div>
-              <p className="text-zinc-600 text-[10px] mb-1">To</p>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] tracking-[0.25em] text-[#dfdfdf] pointer-events-none">
+                TO:
+              </span>
               <input
                 type="date"
                 value={filters.date_to ?? ''}
                 onChange={e => update({ date_to: e.target.value || undefined })}
-                className="w-full bg-zinc-900 border border-zinc-800 px-2.5 py-1.5 text-xs text-zinc-100 focus:outline-none focus:border-zinc-600 transition-colors"
+                className="w-full bg-[#424242] border-0 pl-10 pr-3 py-3 text-[10px] tracking-[0.2em] text-[#dfdfdf] focus:outline-none focus:ring-1 focus:ring-[#666] [color-scheme:dark]"
               />
             </div>
           </div>
-        </section>
+        </div>
+
+        {/* Entry count */}
+        <p className="text-[#555] text-[9px] tracking-[0.25em] uppercase">
+          {entryCount} {entryCount === 1 ? 'ENTRY' : 'ENTRIES'}
+        </p>
 
       </div>
 
-      {/* Footer */}
-      <div className="px-5 py-4 border-t border-zinc-800 flex items-center justify-between">
-        <p className="text-zinc-600 text-[10px] tracking-widest uppercase">
-          {entryCount} {entryCount === 1 ? 'entry' : 'entries'}
-        </p>
-        {hasFilters && (
-          <button
-            onClick={() => { onChange({}); setWriterInput('') }}
-            className="text-[10px] tracking-widest uppercase text-zinc-500 hover:text-zinc-200 transition-colors"
-          >
-            Clear
-          </button>
-        )}
+      {/* Bottom nav */}
+      <div className="flex border-t border-[#222]">
+        <Link
+          href="/map"
+          className={`flex items-center justify-center w-14 h-14 transition-colors ${pathname === '/map' ? 'bg-[#424242]' : 'bg-[#141415] hover:bg-[#2a2b2b]'}`}
+          title="Map"
+        >
+          <MapIcon />
+        </Link>
+        <Link
+          href="/submit"
+          className={`flex items-center justify-center w-14 h-14 transition-colors ${pathname === '/submit' ? 'bg-[#424242]' : 'bg-[#141415] hover:bg-[#2a2b2b]'}`}
+          title="Submit"
+        >
+          <CameraIcon />
+        </Link>
       </div>
     </div>
+  )
+}
+
+function MapIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dfdfdf" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+      <line x1="9" y1="3" x2="9" y2="18" />
+      <line x1="15" y1="6" x2="15" y2="21" />
+    </svg>
+  )
+}
+
+function CameraIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#dfdfdf" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+      <circle cx="12" cy="13" r="3" />
+    </svg>
   )
 }

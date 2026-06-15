@@ -5,6 +5,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { Entry } from '@/types'
 import { format } from 'date-fns'
+import type { RefObject } from 'react'
 
 // Fix default marker icon paths broken by webpack
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl
@@ -17,11 +18,11 @@ L.Icon.Default.mergeOptions({
 interface Props {
   entries: Entry[]
   loading: boolean
+  mapRef: RefObject<L.Map | null>
 }
 
-export function MapView({ entries, loading }: Props) {
+export function MapView({ entries, loading, mapRef }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const mapRef = useRef<L.Map | null>(null)
   const clusterRef = useRef<L.LayerGroup | null>(null)
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export function MapView({ entries, loading }: Props) {
     const map = L.map(containerRef.current, {
       center: [51.505, -0.09],
       zoom: 12,
-      zoomControl: true,
+      zoomControl: false,
     })
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -45,7 +46,7 @@ export function MapView({ entries, loading }: Props) {
       map.remove()
       mapRef.current = null
     }
-  }, [])
+  }, [mapRef])
 
   useEffect(() => {
     const map = mapRef.current
@@ -67,20 +68,18 @@ export function MapView({ entries, loading }: Props) {
           <div style="color:#71717a;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px">${entry.type} &nbsp;·&nbsp; ${format(new Date(entry.date_spotted), 'dd MMM yyyy')}</div>
           ${entry.location_label ? `<div style="color:#52525b;margin-top:2px">${entry.location_label}</div>` : ''}
         </div>
-      `, {
-        className: 'graf-popup',
-      })
+      `, { className: 'graf-popup' })
       group.addLayer(marker)
     })
 
     group.addTo(map)
-  }, [entries])
+  }, [entries, mapRef])
 
   return (
-    <div className="relative flex-1">
+    <div className="absolute inset-0">
       <div ref={containerRef} className="absolute inset-0" />
       {loading && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-zinc-900/90 text-sm px-3 py-1.5 rounded-full z-[1000]">
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-[#141415] text-[10px] tracking-[0.25em] uppercase text-[#dfdfdf] px-4 py-2 z-[1000]">
           Loading…
         </div>
       )}
