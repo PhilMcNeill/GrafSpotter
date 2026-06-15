@@ -80,8 +80,11 @@ export function MapContainer() {
 
         {/* Zoom controls — always top-left of map area */}
         <div
-          className="absolute z-[3000] flex flex-col"
-          style={{ top: 'clamp(16px, 2.5vh, 40px)', left: 'clamp(10px, 0.8vw, 14px)' }}
+          className="absolute z-[3000] flex flex-col transition-[left] duration-300 ease-in-out"
+          style={{
+            top: 'clamp(16px, 2.5vh, 40px)',
+            left: panelOpen ? 'calc(clamp(220px, 20.83vw, 400px) + clamp(10px, 0.8vw, 14px))' : 'clamp(10px, 0.8vw, 14px)',
+          }}
         >
           <button className={zoomBtn} onClick={() => zoom('in')} aria-label="Zoom in">+</button>
           <div className="h-px bg-[#222]" />
