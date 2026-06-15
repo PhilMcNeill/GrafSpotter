@@ -26,8 +26,14 @@ body {
 }
 
 /* Leaflet tile background — prevents white flash when tiles haven't loaded */
-.leaflet-container {
-  background: #090909;
+.leaflet-container,
+.leaflet-tile-pane,
+.leaflet-tile,
+.leaflet-tile-container {
+  background: #090909 !important;
+}
+.leaflet-tile {
+  filter: brightness(1);
 }
 
 /* Dark Leaflet popup */

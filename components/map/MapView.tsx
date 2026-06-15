@@ -32,7 +32,8 @@ export function MapView({ entries, loading, mapRef }: Props) {
       zoom: 12,
       zoomControl: false,
       attributionControl: false,
-    })
+      backgroundColor: '#090909',
+    } as L.MapOptions)
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
