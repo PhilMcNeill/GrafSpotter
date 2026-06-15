@@ -33,9 +33,10 @@ export function MapView({ entries, loading }: Props) {
       zoomControl: true,
     })
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19,
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 20,
     }).addTo(map)
 
     mapRef.current = map
@@ -60,13 +61,15 @@ export function MapView({ entries, loading }: Props) {
     entries.forEach(entry => {
       const marker = L.marker([entry.latitude, entry.longitude])
       marker.bindPopup(`
-        <div style="min-width:200px">
-          ${entry.photo_url ? `<img src="${entry.photo_url}" style="width:100%;border-radius:6px;margin-bottom:8px;max-height:150px;object-fit:cover" />` : ''}
-          <div style="font-weight:700;font-size:1rem;margin-bottom:2px">${entry.writer_name}</div>
-          <div style="font-size:0.75rem;color:#888;margin-bottom:4px">${entry.type} · ${format(new Date(entry.date_spotted), 'dd MMM yyyy')}</div>
-          ${entry.location_label ? `<div style="font-size:0.75rem;color:#aaa">${entry.location_label}</div>` : ''}
+        <div style="min-width:210px;background:#111;color:#f4f4f5;font-family:ui-monospace,monospace;font-size:11px;">
+          ${entry.photo_url ? `<img src="${entry.photo_url}" style="width:100%;display:block;margin-bottom:10px;max-height:140px;object-fit:cover" />` : ''}
+          <div style="font-size:13px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:4px">${entry.writer_name}</div>
+          <div style="color:#71717a;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:2px">${entry.type} &nbsp;·&nbsp; ${format(new Date(entry.date_spotted), 'dd MMM yyyy')}</div>
+          ${entry.location_label ? `<div style="color:#52525b;margin-top:2px">${entry.location_label}</div>` : ''}
         </div>
-      `)
+      `, {
+        className: 'graf-popup',
+      })
       group.addLayer(marker)
     })
 
