@@ -79,8 +79,7 @@ export function MapContainer() {
         >
           {/* Backdrop */}
           <div
-            className={`absolute inset-0 bg-black/50 transition-opacity duration-300 ${panelOpen ? 'opacity-100' : 'opacity-0'}`}
-            onClick={() => setActivePanel(null)}
+            className={`absolute inset-0 transition-opacity duration-300 ${panelOpen ? 'opacity-100' : 'opacity-0'}`}
           />
 
           {/* Panel */}
