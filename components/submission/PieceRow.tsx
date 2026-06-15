@@ -17,51 +17,47 @@ interface Props {
   showRemove: boolean
 }
 
+const inputCls = 'w-full bg-[#2a2b2b] border-0 px-[clamp(10px,1.1vw,16px)] py-[clamp(12px,1.68vh,24px)] text-[clamp(9px,0.78vw,12px)] tracking-[0.28em] uppercase text-[#dfdfdf] placeholder-[#555] focus:outline-none focus:ring-1 focus:ring-[#666]'
+
 export function PieceRow({ index, field, onChange, onRemove, showRemove }: Props) {
   const isSuggested = field.piece?.suggested_name != null && !field.confirmed
 
   return (
-    <div className="border border-zinc-800 rounded-xl p-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">
-          Piece {index + 1}
-        </span>
-        {showRemove && (
-          <button
-            type="button"
-            onClick={onRemove}
-            className="text-xs text-red-500 hover:text-red-400"
-          >
-            Remove
-          </button>
-        )}
-      </div>
-
-      <div>
-        <label className="block text-xs text-zinc-500 mb-1">Writer name *</label>
+    <div className="space-y-px">
+      {/* Writer name */}
+      <div className="relative">
         {isSuggested && (
-          <p className="text-xs text-yellow-400 mb-1">
-            AI suggestion — please confirm or correct
-          </p>
+          <span className="absolute right-[clamp(10px,1.1vw,16px)] top-1/2 -translate-y-1/2 text-[clamp(7px,0.6vw,9px)] tracking-[0.2em] uppercase text-[#444] pointer-events-none">
+            AI
+          </span>
         )}
         <input
           value={field.writer_name}
           onChange={e => onChange({ writer_name: e.target.value, confirmed: true })}
-          placeholder="e.g. SNEK"
-          className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-yellow-400"
+          placeholder={`WRITER ${index + 1}`}
+          className={inputCls}
           required
         />
       </div>
 
-      <div>
-        <label className="block text-xs text-zinc-500 mb-1">Type *</label>
+      {/* Type select */}
+      <div className="flex items-center gap-px">
         <select
           value={field.type}
           onChange={e => onChange({ type: e.target.value as GraffitiType })}
-          className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-yellow-400"
+          className={`${inputCls} flex-1 appearance-none cursor-pointer`}
         >
-          {GRAFFITI_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+          {GRAFFITI_TYPES.map(t => <option key={t} value={t}>{t.toUpperCase()}</option>)}
         </select>
+        {showRemove && (
+          <button
+            type="button"
+            onClick={onRemove}
+            className="flex-shrink-0 px-[clamp(10px,1.1vw,16px)] py-[clamp(12px,1.68vh,24px)] bg-[#2a2b2b] text-[clamp(8px,0.65vw,10px)] tracking-[0.25em] uppercase text-[#444] hover:text-[#dfdfdf] transition-colors"
+          >
+            ×
+          </button>
+        )}
       </div>
     </div>
   )

@@ -17,6 +17,9 @@ function emptyPiece(): PieceField {
   return { piece: null, writer_name: '', type: 'tag', confirmed: false }
 }
 
+const sectionLabel = 'text-[#dfdfdf] text-[clamp(9px,0.78vw,12px)] tracking-[0.32em] uppercase'
+const inputCls = 'w-full bg-[#424242] border-0 px-[clamp(10px,1.1vw,16px)] py-[clamp(12px,1.68vh,24px)] text-[clamp(9px,0.78vw,12px)] tracking-[0.28em] uppercase text-[#dfdfdf] placeholder-[#666] focus:outline-none focus:ring-1 focus:ring-[#666]'
+
 export function SubmitForm() {
   const router = useRouter()
   const [photo, setPhoto] = useState<File | null>(null)
@@ -84,8 +87,6 @@ export function SubmitForm() {
     setSubmitting(true)
     setSubmitError(null)
 
-    const results: string[] = []
-
     for (const [i, piece] of pieces.entries()) {
       if (!piece.writer_name.trim()) {
         setSubmitError(`Piece ${i + 1}: writer name is required`)
@@ -112,120 +113,130 @@ export function SubmitForm() {
         setSubmitting(false)
         return
       }
-      const entry = await res.json()
-      results.push(entry.id)
     }
 
     router.push('/map')
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <section>
-        <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">Photo</h2>
-        <PhotoUploader
-          onPhoto={setPhoto}
-          onAnalysis={handleAnalysis}
-          onAnalysisError={handleAnalysisError}
-          onGps={handleGps}
-        />
-        {analysisError && (
-          <p className="text-zinc-500 text-xs mt-2">
-            AI analysis unavailable — please fill in the details manually.
-          </p>
-        )}
-      </section>
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="px-[clamp(16px,2.1vw,30px)] pt-[clamp(24px,3.5vh,52px)] pb-0">
+        <span className={sectionLabel}>SUBMIT</span>
+      </div>
 
-      <section>
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider">Pieces</h2>
-          <button
-            type="button"
-            onClick={() => setPieces(prev => [...prev, emptyPiece()])}
-            className="text-xs text-yellow-400 hover:text-yellow-300"
-          >
-            + Add piece
-          </button>
+      {/* Scrollable body */}
+      <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-[clamp(16px,2.1vw,30px)] pt-[clamp(20px,3.7vh,56px)] space-y-[clamp(20px,3.5vh,52px)]">
+
+        {/* PHOTO */}
+        <div>
+          <p className={`${sectionLabel} mb-[clamp(8px,1.1vh,16px)]`}>PHOTO</p>
+          <PhotoUploader
+            onPhoto={setPhoto}
+            onAnalysis={handleAnalysis}
+            onAnalysisError={handleAnalysisError}
+            onGps={handleGps}
+          />
+          {analysisError && (
+            <p className="text-[clamp(8px,0.65vw,10px)] tracking-[0.2em] uppercase text-[#444] mt-2">
+              AI analysis unavailable — fill in details manually
+            </p>
+          )}
         </div>
-        <div className="space-y-3">
-          {pieces.map((piece, i) => (
-            <PieceRow
-              key={i}
-              index={i}
-              field={piece}
-              onChange={patch => updatePiece(i, patch)}
-              onRemove={() => removePiece(i)}
-              showRemove={pieces.length > 1}
+
+        {/* PIECES */}
+        <div>
+          <div className="flex items-center justify-between mb-[clamp(8px,1.1vh,16px)]">
+            <p className={sectionLabel}>PIECES</p>
+            <button
+              type="button"
+              onClick={() => setPieces(prev => [...prev, emptyPiece()])}
+              className="text-[clamp(8px,0.65vw,10px)] tracking-[0.28em] uppercase text-[#444] hover:text-[#dfdfdf] transition-colors"
+            >
+              + ADD
+            </button>
+          </div>
+          <div className="space-y-px">
+            {pieces.map((piece, i) => (
+              <PieceRow
+                key={i}
+                index={i}
+                field={piece}
+                onChange={patch => updatePiece(i, patch)}
+                onRemove={() => removePiece(i)}
+                showRemove={pieces.length > 1}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* LOCATION */}
+        <div>
+          <p className={`${sectionLabel} mb-[clamp(8px,1.1vh,16px)]`}>LOCATION</p>
+          <div className="space-y-px">
+            <input
+              value={latitude}
+              onChange={e => setLatitude(e.target.value)}
+              placeholder="LATITUDE"
+              required
+              className={inputCls}
             />
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">Location</h2>
-        <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs text-zinc-500 mb-1">Latitude *</label>
-              <input
-                value={latitude}
-                onChange={e => setLatitude(e.target.value)}
-                placeholder="51.5194"
-                required
-                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-yellow-400"
-              />
-            </div>
-            <div>
-              <label className="block text-xs text-zinc-500 mb-1">Longitude *</label>
-              <input
-                value={longitude}
-                onChange={e => setLongitude(e.target.value)}
-                placeholder="-0.1270"
-                required
-                className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-yellow-400"
-              />
-            </div>
+            <input
+              value={longitude}
+              onChange={e => setLongitude(e.target.value)}
+              placeholder="LONGITUDE"
+              required
+              className={inputCls}
+            />
+            <input
+              value={locationLabel}
+              onChange={e => setLocationLabel(e.target.value)}
+              placeholder="LABEL (OPTIONAL)"
+              className={inputCls}
+            />
           </div>
           <button
             type="button"
             onClick={requestGps}
             disabled={gpsLoading}
-            className="text-xs text-yellow-400 hover:text-yellow-300 disabled:opacity-50"
+            className="mt-[clamp(6px,0.8vh,12px)] text-[clamp(8px,0.65vw,10px)] tracking-[0.28em] uppercase text-[#444] hover:text-[#dfdfdf] transition-colors disabled:opacity-40"
           >
-            {gpsLoading ? 'Getting location…' : 'Use my current location'}
+            {gpsLoading ? 'LOCATING…' : '+ USE MY LOCATION'}
           </button>
-          <div>
-            <label className="block text-xs text-zinc-500 mb-1">Location label (optional)</label>
-            <input
-              value={locationLabel}
-              onChange={e => setLocationLabel(e.target.value)}
-              placeholder="e.g. Shoreditch, London"
-              className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-yellow-400"
-            />
-          </div>
         </div>
-      </section>
 
-      <section>
-        <h2 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">Date</h2>
-        <input
-          type="date"
-          value={dateSpotted}
-          onChange={e => setDateSpotted(e.target.value)}
-          required
-          className="w-full bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-yellow-400"
-        />
-      </section>
+        {/* DATE */}
+        <div>
+          <p className={`${sectionLabel} mb-[clamp(8px,1.1vh,16px)]`}>DATE</p>
+          <input
+            type="date"
+            value={dateSpotted}
+            onChange={e => setDateSpotted(e.target.value)}
+            required
+            className={`${inputCls} [color-scheme:dark]`}
+          />
+        </div>
 
-      {submitError && <p className="text-red-400 text-sm">{submitError}</p>}
+        {submitError && (
+          <p className="text-[clamp(8px,0.65vw,10px)] tracking-[0.2em] uppercase text-red-400">{submitError}</p>
+        )}
 
-      <button
-        type="submit"
-        disabled={submitting || !photo}
-        className="w-full bg-yellow-400 text-zinc-950 font-semibold py-3 rounded-xl hover:bg-yellow-300 transition-colors disabled:opacity-50"
-      >
-        {submitting ? 'Submitting…' : `Submit ${pieces.length > 1 ? `${pieces.length} pieces` : 'entry'}`}
-      </button>
-    </form>
+        {/* Spacer so submit button doesn't overlap content */}
+        <div className="h-4" />
+      </form>
+
+      {/* Submit button — pinned to bottom */}
+      <div className="px-[clamp(16px,2.1vw,30px)] pb-[clamp(16px,2.5vh,36px)] pt-[clamp(12px,1.8vh,24px)]">
+        <button
+          type="submit"
+          form=""
+          disabled={submitting || !photo}
+          onClick={handleSubmit as unknown as React.MouseEventHandler<HTMLButtonElement>}
+          className="w-full bg-[#424242] text-[#dfdfdf] text-[clamp(9px,0.78vw,12px)] tracking-[0.32em] uppercase py-[clamp(12px,1.68vh,24px)] hover:bg-[#555] transition-colors disabled:opacity-40"
+        >
+          {submitting ? 'SUBMITTING…' : `SUBMIT ${pieces.length > 1 ? `${pieces.length} PIECES` : 'ENTRY'}`}
+        </button>
+      </div>
+    </div>
   )
 }
