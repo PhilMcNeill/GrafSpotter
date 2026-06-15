@@ -17,14 +17,8 @@ export function MapContainer() {
 
   return (
     <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-      <div className="md:w-64 md:flex-shrink-0 p-3 overflow-y-auto">
-        <FilterPanel filters={filters} onChange={setFilters} />
-        <p className="text-xs text-zinc-600 mt-3 text-center">
-          {entries.length} entr{entries.length === 1 ? 'y' : 'ies'}
-        </p>
-        {entries.length === 0 && !isLoading && (
-          <p className="text-xs text-zinc-500 mt-2 text-center">No entries found</p>
-        )}
+      <div className="w-56 flex-shrink-0 hidden md:flex flex-col border-r border-zinc-800">
+        <FilterPanel filters={filters} onChange={setFilters} entryCount={entries.length} />
       </div>
       <div className="flex-1 flex flex-col min-h-[400px] md:min-h-0">
         <MapView entries={entries} loading={isLoading} />
