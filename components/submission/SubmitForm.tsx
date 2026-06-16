@@ -109,10 +109,15 @@ export function SubmitForm({ onDone }: { onDone?: () => void }) {
 
       const res = await fetch('/api/entries', { method: 'POST', body: fd })
       if (!res.ok) {
-        let message = 'Submission failed'
+        let message = `Error ${res.status}`
         try {
-          const data = await res.json()
-          message = data.error ?? (res.status === 401 ? 'You must be logged in to submit' : `Error ${res.status}`)
+          const text = await res.text()
+          try {
+            const data = JSON.parse(text)
+            message = data.error ?? `Error ${res.status}`
+          } catch {
+            message = `Error ${res.status}: ${text.slice(0, 120)}`
+          }
         } catch {}
         setSubmitError(message)
         setSubmitting(false)
