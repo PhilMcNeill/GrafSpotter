@@ -7,6 +7,7 @@ import { PermanentNav, NAV_WIDTH } from './PermanentNav'
 import { SubmitForm } from '@/components/submission/SubmitForm'
 import { AuthModal } from '@/components/auth/AuthModal'
 import { useEntries } from '@/hooks/useEntries'
+import { useQueryClient } from '@tanstack/react-query'
 import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { Map as LeafletMap } from 'leaflet'
@@ -30,6 +31,7 @@ export function MapContainer() {
   const mapRef = useRef<LeafletMap | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const [activePanel, setActivePanel] = useState<Panel | null>(null)
+  const queryClient = useQueryClient()
   // displayedPanel lags behind activePanel — stays set during close animation
   const [displayedPanel, setDisplayedPanel] = useState<Panel | null>(null)
 
@@ -113,7 +115,10 @@ export function MapContainer() {
           )}
 
           {displayedPanel === 'submit' && (
-            <SubmitForm onDone={closePanel} />
+            <SubmitForm onDone={() => {
+              queryClient.invalidateQueries({ queryKey: ['entries'] })
+              closePanel()
+            }} />
           )}
 
           {displayedPanel === 'account' && (
