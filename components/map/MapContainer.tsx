@@ -116,7 +116,7 @@ export function MapContainer() {
 
           {displayedPanel === 'submit' && (
             <SubmitForm onDone={() => {
-              queryClient.invalidateQueries({ queryKey: ['entries'] })
+              queryClient.refetchQueries({ queryKey: ['entries'] })
               closePanel()
             }} />
           )}
