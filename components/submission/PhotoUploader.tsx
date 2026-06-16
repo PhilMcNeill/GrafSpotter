@@ -69,16 +69,15 @@ export function PhotoUploader({ onPhoto, onAnalysis, onAnalysisError, onGps }: P
 
       {/* Buttons */}
       <div className="grid grid-cols-2 gap-px">
-        <label htmlFor="photo-camera" className={`${btnCls} cursor-pointer`}>
+        <label className={`${btnCls} cursor-pointer`}>
           <CameraIcon /> {preview ? 'RETAKE' : 'CAMERA'}
+          <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" className="sr-only" onChange={onChange} />
         </label>
-        <label htmlFor="photo-library" className={`${btnCls} cursor-pointer`}>
+        <label className={`${btnCls} cursor-pointer`}>
           <LibraryIcon /> {preview ? 'CHANGE' : 'LIBRARY'}
+          <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={onChange} />
         </label>
       </div>
-
-      <input id="photo-camera" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" className="hidden" onChange={onChange} />
-      <input id="photo-library" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={onChange} />
 
       {/* Status */}
       <div className="min-h-[1.2rem] pt-1">
