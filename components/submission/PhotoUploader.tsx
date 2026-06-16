@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { AnalyseResponse } from '@/types'
 import exifr from 'exifr'
@@ -18,8 +18,6 @@ interface Props {
 }
 
 export function PhotoUploader({ onPhoto, onAnalysis, onAnalysisError, onGps }: Props) {
-  const cameraInputRef = useRef<HTMLInputElement>(null)
-  const libraryInputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const [analysing, setAnalysing] = useState(false)
   const [gpsSource, setGpsSource] = useState<'exif' | 'none' | null>(null)
@@ -70,28 +68,17 @@ export function PhotoUploader({ onPhoto, onAnalysis, onAnalysisError, onGps }: P
       )}
 
       {/* Buttons */}
-      {!preview ? (
-        <div className="grid grid-cols-2 gap-px">
-          <button type="button" onClick={() => cameraInputRef.current?.click()} className={btnCls}>
-            <CameraIcon /> CAMERA
-          </button>
-          <button type="button" onClick={() => libraryInputRef.current?.click()} className={btnCls}>
-            <LibraryIcon /> LIBRARY
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-px">
-          <button type="button" onClick={() => cameraInputRef.current?.click()} className={btnCls}>
-            <CameraIcon /> RETAKE
-          </button>
-          <button type="button" onClick={() => libraryInputRef.current?.click()} className={btnCls}>
-            <LibraryIcon /> CHANGE
-          </button>
-        </div>
-      )}
+      <div className="grid grid-cols-2 gap-px">
+        <label htmlFor="photo-camera" className={`${btnCls} cursor-pointer`}>
+          <CameraIcon /> {preview ? 'RETAKE' : 'CAMERA'}
+        </label>
+        <label htmlFor="photo-library" className={`${btnCls} cursor-pointer`}>
+          <LibraryIcon /> {preview ? 'CHANGE' : 'LIBRARY'}
+        </label>
+      </div>
 
-      <input ref={cameraInputRef} type="file" accept="image/jpeg,image/png,image/webp" capture="environment" className="hidden" onChange={onChange} />
-      <input ref={libraryInputRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={onChange} />
+      <input id="photo-camera" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" className="hidden" onChange={onChange} />
+      <input id="photo-library" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={onChange} />
 
       {/* Status */}
       <div className="min-h-[1.2rem] pt-1">
