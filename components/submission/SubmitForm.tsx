@@ -83,6 +83,7 @@ export function SubmitForm({ onDone }: { onDone?: () => void }) {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!photo) { setSubmitError('Please select a photo'); return }
+    if (!latitude || !longitude) { setSubmitError('Location is required — use GPS or enter manually'); return }
 
     setSubmitting(true)
     setSubmitError(null)
@@ -108,8 +109,12 @@ export function SubmitForm({ onDone }: { onDone?: () => void }) {
 
       const res = await fetch('/api/entries', { method: 'POST', body: fd })
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        setSubmitError(data.error ?? 'Submission failed')
+        let message = 'Submission failed'
+        try {
+          const data = await res.json()
+          message = data.error ?? (res.status === 401 ? 'You must be logged in to submit' : `Error ${res.status}`)
+        } catch {}
+        setSubmitError(message)
         setSubmitting(false)
         return
       }
