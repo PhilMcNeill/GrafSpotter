@@ -66,7 +66,8 @@ export function MapContainer() {
   }
 
   const zoomBtn = 'flex items-center justify-center w-[clamp(36px,3.1vw,48px)] h-[clamp(36px,3.1vw,48px)] bg-[#141415] text-[#dfdfdf] text-lg hover:bg-[#2a2b2b] transition-colors select-none font-mono leading-none'
-  const panelOpen = activePanel !== null
+  const panelVisible = activePanel !== null   // drives slide transform
+  const panelOpen = displayedPanel !== null   // drives zoom button position (stays true during close animation)
 
   return (
     <div className="flex w-full h-full overflow-hidden bg-black">
@@ -93,10 +94,10 @@ export function MapContainer() {
 
         {/* Slide panel — overlays from the left edge of map area */}
         <div
-          className={`absolute top-0 left-0 h-full z-[2000] transition-transform duration-300 ease-in-out ${panelOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+          className={`absolute top-0 left-0 h-full z-[2000] transition-transform duration-300 ease-in-out ${panelVisible ? 'pointer-events-auto' : 'pointer-events-none'}`}
           style={{
             width: PANEL_WIDTH,
-            transform: panelOpen ? 'translateX(0)' : 'translateX(-100%)',
+            transform: panelVisible ? 'translateX(0)' : 'translateX(-100%)',
           }}
         >
           {/* × in top-right of panel */}
