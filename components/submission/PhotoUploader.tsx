@@ -22,11 +22,27 @@ export function PhotoUploader({ onPhoto, onAnalysis, onAnalysisError, onGps }: P
   const [analysing, setAnalysing] = useState(false)
   const [gpsSource, setGpsSource] = useState<'exif' | 'none' | null>(null)
 
+  async function compressImage(file: File): Promise<File> {
+    const MAX_DIM = 1920
+    const QUALITY = 0.82
+    const img = document.createElement('img')
+    const url = URL.createObjectURL(file)
+    await new Promise<void>(res => { img.onload = () => res(); img.src = url })
+    URL.revokeObjectURL(url)
+    const scale = Math.min(1, MAX_DIM / Math.max(img.width, img.height))
+    const canvas = document.createElement('canvas')
+    canvas.width = Math.round(img.width * scale)
+    canvas.height = Math.round(img.height * scale)
+    canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height)
+    const blob = await new Promise<Blob>((res) => canvas.toBlob((b) => res(b as Blob), 'image/jpeg', QUALITY))
+    return new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' })
+  }
+
   async function handleFile(file: File) {
     setPreview(URL.createObjectURL(file))
     setGpsSource(null)
-    onPhoto(file)
 
+    // Read EXIF before compression (compression strips metadata)
     const [exif] = await Promise.allSettled([exifr.gps(file)])
     if (exif.status === 'fulfilled' && exif.value?.latitude && exif.value?.longitude) {
       onGps({ latitude: exif.value.latitude, longitude: exif.value.longitude })
@@ -35,9 +51,12 @@ export function PhotoUploader({ onPhoto, onAnalysis, onAnalysisError, onGps }: P
       setGpsSource('none')
     }
 
+    const compressed = await compressImage(file)
+    onPhoto(compressed)
+
     setAnalysing(true)
     const fd = new FormData()
-    fd.append('photo', file)
+    fd.append('photo', compressed)
     try {
       const res = await fetch('/api/entries/analyse', { method: 'POST', body: fd })
       if (!res.ok) throw new Error('Analysis failed')
